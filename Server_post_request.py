@@ -3,25 +3,27 @@
 import os
 import requests
 
-# Set the URL for the API endpoint
-url = "http://<external-IP>/feedback"
+ 
 
-# Define the path to the feedback directory
-file_path = "/data/feedback"
+# Set the directory containing the feedback files
+feed_path = "/data/feedback"
 
-# Iterate over each file in the feedback directory
-for file in os.listdir(file_path):
-    # Check if the file is a text file
-    if file.endswith(".txt"):
-        # Open the file and read its contents
-        with open(os.path.join(file_path, file), "r") as f:
-            # Create a dictionary with the feedback data
-            feedback = {"title": f.readline().strip(),
-                        "name": f.readline().strip(),
-                        "date": f.readline().strip(),
-                        "feedback": f.readline().strip()}
-            # Make a POST request to the API endpoint with the feedback data
-            response = requests.post(url, json=feedback)
-            # Print the status code and text of the response object
-            print("Status code:", response.status_code)
-            print("Response text:", response.text)
+# Get a list of all .txt files in the feedback directory
+feedback_files = [file for file in os.listdir(feed_path) if file.endswith(".txt")]
+
+# Iterate over each file and extract the information
+for file in feedback_files:
+    with open(os.path.join(feed_path, file)) as f:
+        lines = f.readlines()
+        feedback = {
+            "title": lines[0].strip(),
+            "name": lines[1].strip(),
+            "date": lines[2].strip(),
+            "feedback": lines[3].strip(),
+        }
+        response = requests.post("http://<url>/feedback", json=feedback)
+        if response.status_code != 201:
+            print(f"Error posting feedback for {file}: {response.status_code} {response.text}")
+            
+            
+             
