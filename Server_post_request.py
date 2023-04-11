@@ -5,7 +5,7 @@ import requests
 
 # Set directory path and URL
 dir_path = "/data/feedback/"
-url = "http://104.154.51.98/feedback/"
+url = "http://<add-URL-HERE>feedback/"
 
 # Loop through each file in directory
 for file_name in os.listdir(dir_path):
